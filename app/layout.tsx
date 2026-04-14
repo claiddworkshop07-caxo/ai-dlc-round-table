@@ -39,6 +39,9 @@ export default function RootLayout({
             <a href="/scan" className="text-sm font-medium hover:underline">
               📷 スキャン
             </a>
+            <a href="/history" className="text-sm font-medium hover:underline">
+              📋 履歴
+            </a>
           </nav>
         </header>
         {children}

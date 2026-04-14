@@ -1,9 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/src/db";
 import { equipment, lendingRecords } from "@/src/schema";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, isNull, desc } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
+
+export async function GET() {
+  const rows = await db
+    .select({
+      id: lendingRecords.id,
+      equipmentId: lendingRecords.equipmentId,
+      equipmentName: equipment.name,
+      borrowerName: lendingRecords.borrowerName,
+      borrowedAt: lendingRecords.borrowedAt,
+      dueDate: lendingRecords.dueDate,
+      returnedAt: lendingRecords.returnedAt,
+      memo: lendingRecords.memo,
+      status: lendingRecords.status,
+    })
+    .from(lendingRecords)
+    .innerJoin(equipment, eq(lendingRecords.equipmentId, equipment.id))
+    .orderBy(desc(lendingRecords.borrowedAt));
+
+  return NextResponse.json(rows);
+}
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
