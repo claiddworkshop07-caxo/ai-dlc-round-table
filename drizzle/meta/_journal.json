@@ -15,6 +15,13 @@
       "when": 1775740882512,
       "tag": "0001_add_comment_id_created_at",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1744732800000,
+      "tag": "0002_add_equipment_lending",
+      "breakpoints": true
     }
   ]
 }
