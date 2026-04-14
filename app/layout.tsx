@@ -36,6 +36,9 @@ export default function RootLayout({
             <a href="/equipment" className="text-sm font-medium hover:underline">
               📦 備品管理
             </a>
+            <a href="/scan" className="text-sm font-medium hover:underline">
+              📷 スキャン
+            </a>
           </nav>
         </header>
         {children}
