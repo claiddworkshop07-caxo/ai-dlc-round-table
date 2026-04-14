@@ -2,7 +2,7 @@ import Link from "next/link";
 import { db } from "@/src/db";
 import { equipment } from "@/src/schema";
 import { isNull, desc } from "drizzle-orm";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -30,9 +30,9 @@ export default async function EquipmentPage() {
               登録されている備品を管理します
             </p>
           </div>
-          <Button asChild>
-            <Link href="/equipment/new">+ 新規登録</Link>
-          </Button>
+          <Link href="/equipment/new" className={buttonVariants()}>
+            + 新規登録
+          </Link>
         </div>
 
         {rows.length === 0 ? (
@@ -77,9 +77,9 @@ export default async function EquipmentPage() {
         )}
 
         <div className="pt-4">
-          <Button asChild variant="outline">
-            <Link href="/">← トップへ戻る</Link>
-          </Button>
+          <Link href="/" className={buttonVariants({ variant: "outline" })}>
+            ← トップへ戻る
+          </Link>
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { db } from "@/src/db";
 import { equipment, lendingRecords } from "@/src/schema";
 import { and, eq, isNull } from "drizzle-orm";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -46,9 +46,12 @@ export default async function EquipmentDetailPage({ params }: Props) {
     <div className="min-h-full bg-muted/40 px-4 py-8">
       <div className="mx-auto max-w-2xl space-y-6">
         <div className="flex items-center gap-3">
-          <Button asChild variant="outline" size="sm">
-            <Link href="/equipment">← 一覧に戻る</Link>
-          </Button>
+          <Link
+            href="/equipment"
+            className={buttonVariants({ variant: "outline", size: "sm" })}
+          >
+            ← 一覧に戻る
+          </Link>
           <h1 className="text-xl font-semibold">{item.name}</h1>
         </div>
 
@@ -138,9 +141,12 @@ export default async function EquipmentDetailPage({ params }: Props) {
         {/* 操作ボタン */}
         <Separator />
         <div className="flex items-center justify-between">
-          <Button asChild variant="outline">
-            <Link href={`/equipment/${item.id}/edit`}>編集する</Link>
-          </Button>
+          <Link
+            href={`/equipment/${item.id}/edit`}
+            className={buttonVariants({ variant: "outline" })}
+          >
+            編集する
+          </Link>
           <DeleteButton equipmentId={item.id} equipmentName={item.name} />
         </div>
       </div>
