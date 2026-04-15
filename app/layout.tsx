@@ -42,6 +42,9 @@ export default function RootLayout({
             <a href="/history" className="text-sm font-medium hover:underline">
               📋 History
             </a>
+            <a href="/admin" className="text-sm font-medium hover:underline ml-auto">
+              🔧 Admin
+            </a>
           </nav>
         </header>
         {children}
