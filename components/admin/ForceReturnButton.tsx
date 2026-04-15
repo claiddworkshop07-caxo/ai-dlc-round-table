@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 interface ForceReturnButtonProps {
   lendingId: string;
@@ -18,16 +19,10 @@ export function ForceReturnButton({
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   async function handleForceReturn() {
-    if (
-      !confirm(
-        `Force return "${equipmentName}" borrowed by ${borrowerName}?\nThis will immediately mark the item as returned.`
-      )
-    ) {
-      return;
-    }
-
+    setConfirmOpen(false);
     setLoading(true);
     setError(null);
     try {
@@ -51,12 +46,20 @@ export function ForceReturnButton({
       <Button
         variant="destructive"
         size="sm"
-        onClick={handleForceReturn}
+        onClick={() => setConfirmOpen(true)}
         disabled={loading}
       >
         {loading ? "Processing..." : "Force Return"}
       </Button>
       {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Force Return"
+        description={`Force return "${equipmentName}" borrowed by ${borrowerName}? This will immediately mark the item as returned.`}
+        confirmLabel="Force Return"
+        onConfirm={handleForceReturn}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </div>
   );
 }

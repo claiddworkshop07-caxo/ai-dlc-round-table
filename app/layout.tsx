@@ -28,6 +28,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-background focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:ring-2 focus:ring-ring"
+        >
+          Skip to main content
+        </a>
         <header className="border-b bg-background px-4 py-3">
           <nav className="mx-auto flex max-w-3xl items-center gap-6">
             <a href="/" className="text-sm font-medium hover:underline">
@@ -47,7 +53,9 @@ export default function RootLayout({
             </a>
           </nav>
         </header>
-        {children}
+        <main id="main-content" className="flex-1">
+          {children}
+        </main>
       </body>
     </html>
   );

@@ -92,6 +92,7 @@ export default async function HistoryPage() {
                           className={isOverdue ? "font-medium text-destructive" : ""}
                         >
                           Due: {r.dueDate}
+                          {isOverdue && <span className="sr-only"> (overdue)</span>}
                         </span>
                         {r.returnedAt && (
                           <span>

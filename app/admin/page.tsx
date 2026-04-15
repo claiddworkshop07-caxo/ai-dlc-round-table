@@ -58,7 +58,14 @@ export default async function AdminPage() {
                       <span className="text-muted-foreground">Due: </span>
                       <span className={isOverdue ? "text-destructive font-medium" : ""}>
                         {row.dueDate}
-                        {isOverdue && " ⚠ Overdue"}
+                        {isOverdue && (
+                          <>
+                            {" "}
+                            <span aria-hidden="true">⚠</span>
+                            <span className="sr-only">(overdue)</span>
+                            {" Overdue"}
+                          </>
+                        )}
                       </span>
                     </p>
                     <p className="text-xs text-muted-foreground">

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 interface DeleteButtonProps {
   equipmentId: string;
@@ -13,11 +14,10 @@ export function DeleteButton({ equipmentId, equipmentName }: DeleteButtonProps) 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   async function handleDelete() {
-    if (!confirm(`Are you sure you want to delete "${equipmentName}"? This action cannot be undone.`)) {
-      return;
-    }
+    setConfirmOpen(false);
     setLoading(true);
     setError(null);
     try {
@@ -41,12 +41,20 @@ export function DeleteButton({ equipmentId, equipmentName }: DeleteButtonProps) 
     <div>
       <Button
         variant="destructive"
-        onClick={handleDelete}
+        onClick={() => setConfirmOpen(true)}
         disabled={loading}
       >
         {loading ? "Deleting..." : "Delete"}
       </Button>
       {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Delete Equipment"
+        description={`Are you sure you want to delete "${equipmentName}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        onConfirm={handleDelete}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </div>
   );
 }

@@ -133,6 +133,7 @@ export default async function DashboardPage() {
                             className={isOverdue ? "font-medium text-destructive" : ""}
                           >
                             Due: {r.dueDate}
+                            {isOverdue && <span className="sr-only"> (overdue)</span>}
                           </span>
                         </div>
                       </CardHeader>
