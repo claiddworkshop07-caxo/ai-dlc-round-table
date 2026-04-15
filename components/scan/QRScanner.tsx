@@ -3,23 +3,25 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
-// BarcodeDetector は TypeScript の標準型定義に含まれていないため宣言
-declare class BarcodeDetector {
-  constructor(options?: { formats: string[] });
-  detect(
-    image: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement
-  ): Promise<{ rawValue: string; format: string }[]>;
-  static getSupportedFormats(): Promise<string[]>;
+// CDN から読み込んだ jsQR の型定義
+declare global {
+  interface Window {
+    jsQR?: (
+      data: Uint8ClampedArray,
+      width: number,
+      height: number,
+      options?: { inversionAttempts?: string }
+    ) => { data: string } | null;
+  }
 }
 
 export function QRScanner() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [scanning, setScanning] = useState(false);
-  const [detected, setDetected] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [status, setStatus] = useState<"loading" | "scanning" | "detected" | "error">("loading");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const animFrameRef = useRef<number>(0);
-  const detectorRef = useRef<InstanceType<typeof BarcodeDetector> | null>(null);
   const router = useRouter();
 
   const stopCamera = useCallback(() => {
@@ -29,18 +31,22 @@ export function QRScanner() {
 
   const handleDetected = useCallback(
     (rawValue: string) => {
-      setDetected(true);
+      setStatus("detected");
       stopCamera();
 
-      // QRコード内容から備品IDを抽出 (/scan/{uuid} 形式 or UUID単体)
+      // QRコード内容から UUID を抽出 (/scan/{uuid} 形式 or UUID 単体)
       const match = rawValue.match(/\/scan\/([0-9a-f-]{36})/i);
-      const id = match ? match[1] : rawValue.trim();
+      const id = match
+        ? match[1]
+        : /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(rawValue.trim())
+          ? rawValue.trim()
+          : null;
 
-      if (id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+      if (id) {
         router.push(`/scan/${id}`);
       } else {
-        setError(`QRコードを読み取りましたが、備品IDが見つかりませんでした。\n内容: ${rawValue}`);
-        setDetected(false);
+        setStatus("error");
+        setErrorMsg(`QRコードを読み取りましたが、備品IDが見つかりませんでした。\n内容: ${rawValue}`);
       }
     },
     [router, stopCamera]
@@ -49,127 +55,124 @@ export function QRScanner() {
   useEffect(() => {
     let isMounted = true;
 
-    async function scan() {
-      if (!isMounted || !videoRef.current || !detectorRef.current) return;
+    function scanFrame() {
+      if (!isMounted || !videoRef.current || !canvasRef.current || !window.jsQR) return;
       const video = videoRef.current;
+      const canvas = canvasRef.current;
 
       if (video.readyState >= video.HAVE_ENOUGH_DATA) {
-        try {
-          const barcodes = await detectorRef.current.detect(video);
-          if (barcodes.length > 0 && isMounted) {
-            handleDetected(barcodes[0].rawValue);
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const code = window.jsQR(imageData.data, imageData.width, imageData.height, {
+            inversionAttempts: "dontInvert",
+          });
+          if (code && isMounted) {
+            handleDetected(code.data);
             return;
           }
-        } catch {
-          // 検出ループのエラーは無視して継続
         }
       }
-      animFrameRef.current = requestAnimationFrame(scan);
+      animFrameRef.current = requestAnimationFrame(scanFrame);
     }
 
-    async function init() {
-      // BarcodeDetector API サポート確認
-      if (!("BarcodeDetector" in window)) {
-        if (isMounted) {
-          setError(
-            "このブラウザはQRコード自動読み取りに対応していません（Chrome推奨）。\n下の入力欄に備品IDを入力してください。"
-          );
-        }
-        return;
-      }
-
-      try {
-        detectorRef.current = new BarcodeDetector({ formats: ["qr_code"] });
-      } catch {
-        if (isMounted)
-          setError("QRリーダーの初期化に失敗しました。手動入力をご利用ください。");
-        return;
-      }
-
+    async function startCamera() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: "environment" },
         });
-        if (!isMounted) {
-          stream.getTracks().forEach((t) => t.stop());
-          return;
-        }
+        if (!isMounted) { stream.getTracks().forEach((t) => t.stop()); return; }
         streamRef.current = stream;
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
           await videoRef.current.play();
-          if (isMounted) {
-            setScanning(true);
-            animFrameRef.current = requestAnimationFrame(scan);
-          }
+        }
+        if (isMounted) {
+          setStatus("scanning");
+          animFrameRef.current = requestAnimationFrame(scanFrame);
         }
       } catch {
-        if (isMounted)
-          setError(
-            "カメラへのアクセスが拒否されました。ブラウザの設定でカメラを許可してください。"
-          );
+        if (isMounted) {
+          setStatus("error");
+          setErrorMsg("カメラへのアクセスが拒否されました。ブラウザの設定でカメラを許可してください。");
+        }
       }
     }
 
-    init();
+    // jsQR を CDN からロードしてからカメラを起動
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js";
+    script.async = true;
+    script.onload = () => { if (isMounted) startCamera(); };
+    script.onerror = () => {
+      if (isMounted) {
+        setStatus("error");
+        setErrorMsg("QRリーダーの読み込みに失敗しました。ネットワーク接続を確認してください。");
+      }
+    };
+    document.head.appendChild(script);
 
     return () => {
       isMounted = false;
       cancelAnimationFrame(animFrameRef.current);
       streamRef.current?.getTracks().forEach((t) => t.stop());
+      script.remove();
     };
   }, [handleDetected]);
 
   function handleManualInput(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const input = (e.currentTarget.elements.namedItem("equipmentId") as HTMLInputElement);
+    const input = e.currentTarget.elements.namedItem("equipmentId") as HTMLInputElement;
     const value = input.value.trim();
-    if (!value) return;
-
     const match = value.match(/\/scan\/([0-9a-f-]{36})/i);
     const id = match ? match[1] : value;
-
     if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
       stopCamera();
       router.push(`/scan/${id}`);
     } else {
-      alert("有効な備品IDを入力してください（例: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx）");
+      alert("有効な備品IDを入力してください");
     }
   }
 
   return (
     <div className="flex flex-col items-center gap-6">
-      {detected && (
+      {/* 状態メッセージ */}
+      {status === "detected" && (
         <div className="w-full max-w-sm rounded-lg border border-green-300 bg-green-50 p-3 text-center text-sm text-green-700">
           ✅ QRコードを検出しました。移動中...
         </div>
       )}
-
-      {error && !detected && (
+      {status === "error" && (
         <div className="w-full max-w-sm rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive whitespace-pre-line">
-          {error}
+          {errorMsg}
         </div>
       )}
 
-      {!error && !detected && (
+      {/* カメラ映像 */}
+      {(status === "loading" || status === "scanning") && (
         <div className="relative w-full max-w-sm overflow-hidden rounded-xl border-2 border-primary bg-black">
           <video ref={videoRef} className="w-full" playsInline muted />
-          {scanning && (
+          {status === "scanning" && (
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
               <div className="h-48 w-48 rounded-lg border-4 border-white/80 shadow-lg" />
             </div>
           )}
-          {!scanning && (
-            <div className="flex h-48 items-center justify-center text-sm text-white/60">
-              カメラを起動中...
+          {status === "loading" && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <p className="text-sm text-white/60">読み込み中...</p>
             </div>
           )}
         </div>
       )}
+      <canvas ref={canvasRef} className="hidden" />
 
-      {!detected && (
-        <div className="w-full max-w-sm space-y-4">
-          {scanning && (
+      {/* 手動入力フォーム */}
+      {status !== "detected" && (
+        <div className="w-full max-w-sm space-y-3">
+          {status === "scanning" && (
             <p className="text-center text-sm text-muted-foreground">
               📷 QRコードを白枠内に合わせてください
             </p>
