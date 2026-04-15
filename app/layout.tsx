@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "備品貸出管理",
-  description: "QRコードで備品の貸出・返却を管理するアプリ",
+  title: "Equipment Lending Management",
+  description: "An app to manage equipment lending and returns via QR codes",
 };
 
 export default function RootLayout({
@@ -24,23 +24,23 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="ja"
+      lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <header className="border-b bg-background px-4 py-3">
           <nav className="mx-auto flex max-w-3xl items-center gap-6">
             <a href="/" className="text-sm font-medium hover:underline">
-              🏠 ホーム
+              🏠 Home
             </a>
             <a href="/equipment" className="text-sm font-medium hover:underline">
-              📦 備品管理
+              📦 Equipment
             </a>
             <a href="/scan" className="text-sm font-medium hover:underline">
-              📷 スキャン
+              📷 Scan
             </a>
             <a href="/history" className="text-sm font-medium hover:underline">
-              📋 履歴
+              📋 History
             </a>
           </nav>
         </header>

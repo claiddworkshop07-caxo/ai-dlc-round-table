@@ -20,27 +20,27 @@ export default async function DonePage({ params, searchParams }: Props) {
             {isLend ? "📤" : "📥"}
           </div>
           <CardTitle className="text-green-700">
-            {isLend ? "貸出完了" : "返却完了"}
+            {isLend ? "Lending Complete" : "Return Complete"}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
             {isLend
-              ? "貸出を記録しました。返却の際は再度QRコードをスキャンしてください。"
-              : "返却を記録しました。ご利用ありがとうございました。"}
+              ? "Lending has been recorded. Please scan the QR code again when returning."
+              : "Return has been recorded. Thank you for using this service."}
           </p>
           <div className="flex flex-col gap-2">
             <Link
               href="/scan"
               className={buttonVariants()}
             >
-              続けてスキャン
+              Scan Again
             </Link>
             <Link
               href={`/equipment/${id}`}
               className={buttonVariants({ variant: "outline" })}
             >
-              備品詳細を見る
+              View Equipment Details
             </Link>
           </div>
         </CardContent>

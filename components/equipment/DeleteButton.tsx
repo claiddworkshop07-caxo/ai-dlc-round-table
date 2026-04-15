@@ -15,7 +15,7 @@ export function DeleteButton({ equipmentId, equipmentName }: DeleteButtonProps) 
   const [error, setError] = useState<string | null>(null);
 
   async function handleDelete() {
-    if (!confirm(`「${equipmentName}」を削除しますか？この操作は取り消せません。`)) {
+    if (!confirm(`Are you sure you want to delete "${equipmentName}"? This action cannot be undone.`)) {
       return;
     }
     setLoading(true);
@@ -26,12 +26,12 @@ export function DeleteButton({ equipmentId, equipmentName }: DeleteButtonProps) 
       });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error ?? "削除に失敗しました");
+        throw new Error(data.error ?? "Failed to delete");
       }
       router.push("/equipment");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "削除に失敗しました");
+      setError(err instanceof Error ? err.message : "Failed to delete");
     } finally {
       setLoading(false);
     }
@@ -44,7 +44,7 @@ export function DeleteButton({ equipmentId, equipmentName }: DeleteButtonProps) 
         onClick={handleDelete}
         disabled={loading}
       >
-        {loading ? "削除中..." : "削除する"}
+        {loading ? "Deleting..." : "Delete"}
       </Button>
       {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
     </div>

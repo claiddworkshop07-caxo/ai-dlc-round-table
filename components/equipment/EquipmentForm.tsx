@@ -56,7 +56,7 @@ export function EquipmentForm({ mode, defaultValues }: EquipmentFormProps) {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error ?? "エラーが発生しました");
+        throw new Error(data.error ?? "An error occurred");
       }
 
       const data = await res.json();
@@ -67,7 +67,7 @@ export function EquipmentForm({ mode, defaultValues }: EquipmentFormProps) {
         router.refresh();
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "エラーが発生しました");
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -77,51 +77,51 @@ export function EquipmentForm({ mode, defaultValues }: EquipmentFormProps) {
     <Card className="w-full max-w-lg shadow-md">
       <CardHeader>
         <CardTitle>
-          {mode === "create" ? "備品を登録する" : "備品を編集する"}
+          {mode === "create" ? "Register Equipment" : "Edit Equipment"}
         </CardTitle>
         <CardDescription>
           {mode === "create"
-            ? "備品情報を入力して登録します。"
-            : "備品情報を変更して保存します。"}
+            ? "Enter equipment details to register."
+            : "Update equipment details and save."}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">備品名 *</Label>
+            <Label htmlFor="name">Equipment Name *</Label>
             <Input
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="例: MacBook Pro 14インチ"
+              placeholder="e.g. MacBook Pro 14-inch"
               required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="category">カテゴリ</Label>
+            <Label htmlFor="category">Category</Label>
             <Input
               id="category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              placeholder="例: PC、AV機器、工具"
+              placeholder="e.g. PC, AV Equipment, Tools"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="location">保管場所</Label>
+            <Label htmlFor="location">Storage Location</Label>
             <Input
               id="location"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              placeholder="例: 棚A-3、会議室B"
+              placeholder="e.g. Shelf A-3, Meeting Room B"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description">説明・特記事項</Label>
+            <Label htmlFor="description">Description / Notes</Label>
             <textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="備品の詳細や注意事項を記入してください"
+              placeholder="Enter equipment details or special notes"
               className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               rows={3}
             />
@@ -134,17 +134,17 @@ export function EquipmentForm({ mode, defaultValues }: EquipmentFormProps) {
           <div className="flex gap-3">
             <Button type="submit" disabled={loading} className="flex-1">
               {loading
-                ? "保存中..."
+                ? "Saving..."
                 : mode === "create"
-                  ? "登録する"
-                  : "更新する"}
+                  ? "Register"
+                  : "Update"}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => router.back()}
             >
-              キャンセル
+              Cancel
             </Button>
           </div>
         </form>

@@ -29,7 +29,7 @@ export function QRCodeDisplay({ equipmentId, equipmentName }: QRCodeDisplayProps
   if (!scanUrl) {
     return (
       <div className="flex h-[200px] w-[200px] items-center justify-center rounded-lg border bg-muted text-sm text-muted-foreground">
-        生成中...
+        Generating...
       </div>
     );
   }
@@ -39,7 +39,7 @@ export function QRCodeDisplay({ equipmentId, equipmentName }: QRCodeDisplayProps
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={qrApiUrl!}
-        alt={`QRコード: ${equipmentName}`}
+        alt={`QR Code: ${equipmentName}`}
         width={200}
         height={200}
         className="rounded-lg border bg-white p-2"
@@ -51,7 +51,7 @@ export function QRCodeDisplay({ equipmentId, equipmentName }: QRCodeDisplayProps
         onClick={handleDownload}
         className="rounded-md border border-input bg-background px-3 py-1.5 text-sm hover:bg-muted transition-colors"
       >
-        QRコードをダウンロード
+        Download QR Code
       </button>
     </div>
   );

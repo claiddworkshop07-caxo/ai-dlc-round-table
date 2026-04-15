@@ -40,19 +40,19 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-full bg-muted/40 px-4 py-8">
       <div className="mx-auto max-w-3xl space-y-6">
-        <h1 className="text-2xl font-semibold">ダッシュボード</h1>
+        <h1 className="text-2xl font-semibold">Dashboard</h1>
 
         {/* サマリーカード */}
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
           <Card>
             <CardContent className="pt-4">
-              <p className="text-xs text-muted-foreground">貸出中</p>
+              <p className="text-xs text-muted-foreground">On Loan</p>
               <p className="text-3xl font-bold">{activeLendings.length}</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-4">
-              <p className="text-xs text-muted-foreground">期限超過</p>
+              <p className="text-xs text-muted-foreground">Overdue</p>
               <p className={`text-3xl font-bold ${overdue.length > 0 ? "text-destructive" : ""}`}>
                 {overdue.length}
               </p>
@@ -61,10 +61,10 @@ export default async function DashboardPage() {
           <Card className="col-span-2 sm:col-span-1">
             <CardContent className="flex h-full items-center justify-center gap-3 pt-4">
               <Link href="/scan" className={buttonVariants({ size: "sm" })}>
-                📷 スキャン
+                📷 Scan
               </Link>
               <Link href="/equipment" className={buttonVariants({ variant: "outline", size: "sm" })}>
-                📦 備品管理
+                📦 Equipment
               </Link>
             </CardContent>
           </Card>
@@ -74,12 +74,12 @@ export default async function DashboardPage() {
         {overdue.length > 0 && (
           <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4">
             <p className="mb-2 font-medium text-destructive">
-              ⚠ 返却期限超過: {overdue.length}件
+              ⚠ Overdue: {overdue.length} item(s)
             </p>
             <ul className="space-y-1 text-sm text-destructive">
               {overdue.map((r) => (
                 <li key={r.lendingId}>
-                  「{r.equipmentName}」{r.borrowerName} さん（期限: {r.dueDate}）
+                  "{r.equipmentName}" — {r.borrowerName} (Due: {r.dueDate})
                 </li>
               ))}
             </ul>
@@ -89,19 +89,19 @@ export default async function DashboardPage() {
         {/* 貸出中一覧 */}
         <div>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="font-medium">貸出中の備品</h2>
+            <h2 className="font-medium">Equipment On Loan</h2>
             <Link
               href="/history"
               className="text-sm text-primary hover:underline"
             >
-              履歴を見る →
+              View History →
             </Link>
           </div>
 
           {activeLendings.length === 0 ? (
             <Card>
               <CardContent className="py-10 text-center text-sm text-muted-foreground">
-                現在貸出中の備品はありません
+                No equipment is currently on loan
               </CardContent>
             </Card>
           ) : (
@@ -123,16 +123,16 @@ export default async function DashboardPage() {
                           </div>
                           {isOverdue && (
                             <span className="rounded-full bg-destructive/10 px-2.5 py-0.5 text-xs font-medium text-destructive">
-                              期限超過
+                              Overdue
                             </span>
                           )}
                         </div>
                         <div className="mt-1 flex gap-4 text-sm text-muted-foreground">
-                          <span>借用者: {r.borrowerName}</span>
+                          <span>Borrower: {r.borrowerName}</span>
                           <span
                             className={isOverdue ? "font-medium text-destructive" : ""}
                           >
-                            返却予定: {r.dueDate}
+                            Due: {r.dueDate}
                           </span>
                         </div>
                       </CardHeader>

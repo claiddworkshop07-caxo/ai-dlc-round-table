@@ -50,7 +50,7 @@ export default async function ScanDetailPage({ params }: Props) {
             href="/scan"
             className={buttonVariants({ variant: "outline", size: "sm" })}
           >
-            ← スキャンに戻る
+            ← Back to Scan
           </Link>
         </div>
 
@@ -58,7 +58,7 @@ export default async function ScanDetailPage({ params }: Props) {
           <CardHeader>
             <div className="flex items-start justify-between">
               <CardTitle>
-                {isAvailable ? "貸出手続き" : "返却手続き"}
+                {isAvailable ? "Borrow Equipment" : "Return Equipment"}
               </CardTitle>
               <span
                 className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
@@ -67,7 +67,7 @@ export default async function ScanDetailPage({ params }: Props) {
                     : "bg-yellow-100 text-yellow-800"
                 }`}
               >
-                {isAvailable ? "利用可能" : "貸出中"}
+                {isAvailable ? "Available" : "On Loan"}
               </span>
             </div>
             <CardDescription>
@@ -91,7 +91,7 @@ export default async function ScanDetailPage({ params }: Props) {
               />
             ) : (
               <p className="text-sm text-muted-foreground">
-                貸出情報が見つかりません。管理者に連絡してください。
+                No lending record found. Please contact an administrator.
               </p>
             )}
           </CardContent>

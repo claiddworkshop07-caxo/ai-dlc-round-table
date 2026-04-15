@@ -35,12 +35,12 @@ export function ReturnConfirm({
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error ?? "エラーが発生しました");
+        throw new Error(data.error ?? "An error occurred");
       }
 
       router.push(`/scan/${equipmentId}/done?action=return`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "エラーが発生しました");
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -49,18 +49,18 @@ export function ReturnConfirm({
   return (
     <div className="space-y-4">
       <div className="rounded-lg bg-muted/60 p-4 space-y-2 text-sm">
-        <p className="font-medium">返却する備品</p>
+        <p className="font-medium">Equipment to Return</p>
         <p className="text-muted-foreground">{equipmentName}</p>
         <div className="border-t pt-2 mt-2">
           <p>
-            <span className="text-muted-foreground">借用者: </span>
+            <span className="text-muted-foreground">Borrower: </span>
             {borrowerName}
           </p>
           <p>
-            <span className="text-muted-foreground">返却予定日: </span>
+            <span className="text-muted-foreground">Due Date: </span>
             <span className={isOverdue ? "text-destructive font-medium" : ""}>
               {dueDate}
-              {isOverdue && " ⚠ 期限超過"}
+              {isOverdue && " ⚠ Overdue"}
             </span>
           </p>
         </div>
@@ -73,7 +73,7 @@ export function ReturnConfirm({
         disabled={loading}
         className="w-full"
       >
-        {loading ? "処理中..." : "返却する"}
+        {loading ? "Processing..." : "Return"}
       </Button>
     </div>
   );

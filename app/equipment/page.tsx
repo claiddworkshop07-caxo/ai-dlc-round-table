@@ -25,20 +25,20 @@ export default async function EquipmentPage() {
       <div className="mx-auto max-w-3xl space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-semibold">備品一覧</h1>
+            <h1 className="text-xl font-semibold">Equipment List</h1>
             <p className="text-sm text-muted-foreground">
-              登録されている備品を管理します
+              Manage registered equipment
             </p>
           </div>
           <Link href="/equipment/new" className={buttonVariants()}>
-            + 新規登録
+            + Add New
           </Link>
         </div>
 
         {rows.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center text-muted-foreground">
-              備品が登録されていません。「新規登録」から追加してください。
+              No equipment registered. Click "Add New" to add items.
             </CardContent>
           </Card>
         ) : (
@@ -61,12 +61,12 @@ export default async function EquipmentPage() {
                             : "bg-yellow-100 text-yellow-800"
                         }`}
                       >
-                        {item.status === "available" ? "利用可能" : "貸出中"}
+                        {item.status === "available" ? "Available" : "On Loan"}
                       </span>
                     </div>
                     {item.location && (
                       <p className="mt-1 text-sm text-muted-foreground">
-                        保管場所: {item.location}
+                        Storage Location: {item.location}
                       </p>
                     )}
                   </CardHeader>
@@ -78,7 +78,7 @@ export default async function EquipmentPage() {
 
         <div className="pt-4">
           <Link href="/" className={buttonVariants({ variant: "outline" })}>
-            ← トップへ戻る
+            ← Back to Top
           </Link>
         </div>
       </div>

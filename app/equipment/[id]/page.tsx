@@ -50,7 +50,7 @@ export default async function EquipmentDetailPage({ params }: Props) {
             href="/equipment"
             className={buttonVariants({ variant: "outline", size: "sm" })}
           >
-            ← 一覧に戻る
+            ← Back to List
           </Link>
           <h1 className="text-xl font-semibold">{item.name}</h1>
         </div>
@@ -59,7 +59,7 @@ export default async function EquipmentDetailPage({ params }: Props) {
         <Card>
           <CardHeader>
             <div className="flex items-start justify-between">
-              <CardTitle>備品情報</CardTitle>
+              <CardTitle>Equipment Details</CardTitle>
               <span
                 className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
                   item.status === "available"
@@ -67,34 +67,34 @@ export default async function EquipmentDetailPage({ params }: Props) {
                     : "bg-yellow-100 text-yellow-800"
                 }`}
               >
-                {item.status === "available" ? "利用可能" : "貸出中"}
+                {item.status === "available" ? "Available" : "On Loan"}
               </span>
             </div>
             {item.category && (
-              <CardDescription>カテゴリ: {item.category}</CardDescription>
+              <CardDescription>Category: {item.category}</CardDescription>
             )}
           </CardHeader>
           <CardContent className="space-y-3">
             {item.location && (
               <div>
-                <p className="text-xs text-muted-foreground">保管場所</p>
+                <p className="text-xs text-muted-foreground">Storage Location</p>
                 <p className="text-sm">{item.location}</p>
               </div>
             )}
             {item.description && (
               <div>
-                <p className="text-xs text-muted-foreground">説明・特記事項</p>
+                <p className="text-xs text-muted-foreground">Description / Notes</p>
                 <p className="text-sm whitespace-pre-wrap">{item.description}</p>
               </div>
             )}
             <div>
-              <p className="text-xs text-muted-foreground">備品ID</p>
+              <p className="text-xs text-muted-foreground">Equipment ID</p>
               <p className="font-mono text-xs text-muted-foreground">{item.id}</p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">登録日</p>
+              <p className="text-xs text-muted-foreground">Registered Date</p>
               <p className="text-sm">
-                {new Date(item.createdAt).toLocaleDateString("ja-JP")}
+                {new Date(item.createdAt).toLocaleDateString("en-US")}
               </p>
             </div>
           </CardContent>
@@ -104,20 +104,20 @@ export default async function EquipmentDetailPage({ params }: Props) {
         {lending && (
           <Card>
             <CardHeader>
-              <CardTitle className="text-yellow-700">現在貸出中</CardTitle>
+              <CardTitle className="text-yellow-700">Currently On Loan</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <div>
-                <p className="text-xs text-muted-foreground">借用者</p>
+                <p className="text-xs text-muted-foreground">Borrower</p>
                 <p className="text-sm font-medium">{lending.borrowerName}</p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">返却予定日</p>
+                <p className="text-xs text-muted-foreground">Due Date</p>
                 <p className="text-sm">{lending.dueDate}</p>
               </div>
               {lending.memo && (
                 <div>
-                  <p className="text-xs text-muted-foreground">メモ</p>
+                  <p className="text-xs text-muted-foreground">Notes</p>
                   <p className="text-sm">{lending.memo}</p>
                 </div>
               )}
@@ -128,9 +128,9 @@ export default async function EquipmentDetailPage({ params }: Props) {
         {/* QRコード */}
         <Card>
           <CardHeader>
-            <CardTitle>QRコード</CardTitle>
+            <CardTitle>QR Code</CardTitle>
             <CardDescription>
-              スマートフォンで読み取ると貸出・返却ページに遷移します
+              Scan with a smartphone to open the lending / return page
             </CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center py-4">
@@ -145,7 +145,7 @@ export default async function EquipmentDetailPage({ params }: Props) {
             href={`/equipment/${item.id}/edit`}
             className={buttonVariants({ variant: "outline" })}
           >
-            編集する
+            Edit
           </Link>
           <DeleteButton equipmentId={item.id} equipmentName={item.name} />
         </div>

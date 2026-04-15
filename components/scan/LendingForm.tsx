@@ -43,12 +43,12 @@ export function LendingForm({ equipmentId, equipmentName }: LendingFormProps) {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error ?? "エラーが発生しました");
+        throw new Error(data.error ?? "An error occurred");
       }
 
       router.push(`/scan/${equipmentId}/done?action=lend`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "エラーが発生しました");
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -57,23 +57,23 @@ export function LendingForm({ equipmentId, equipmentName }: LendingFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="rounded-lg bg-muted/60 p-3 text-sm">
-        <p className="font-medium">貸出する備品</p>
+        <p className="font-medium">Equipment to Borrow</p>
         <p className="text-muted-foreground">{equipmentName}</p>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="borrowerName">借用者名 *</Label>
+        <Label htmlFor="borrowerName">Borrower Name *</Label>
         <Input
           id="borrowerName"
           value={borrowerName}
           onChange={(e) => setBorrowerName(e.target.value)}
-          placeholder="例: 山田 太郎"
+          placeholder="e.g. John Smith"
           required
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="dueDate">返却予定日</Label>
+        <Label htmlFor="dueDate">Due Date</Label>
         <Input
           id="dueDate"
           type="date"
@@ -84,12 +84,12 @@ export function LendingForm({ equipmentId, equipmentName }: LendingFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="memo">メモ（任意）</Label>
+        <Label htmlFor="memo">Notes (optional)</Label>
         <textarea
           id="memo"
           value={memo}
           onChange={(e) => setMemo(e.target.value)}
-          placeholder="備考・用途など"
+          placeholder="Remarks, purpose, etc."
           className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           rows={2}
         />
@@ -98,7 +98,7 @@ export function LendingForm({ equipmentId, equipmentName }: LendingFormProps) {
       {error && <p className="text-sm text-destructive">{error}</p>}
 
       <Button type="submit" disabled={loading} className="w-full">
-        {loading ? "処理中..." : "貸出する"}
+        {loading ? "Processing..." : "Borrow"}
       </Button>
     </form>
   );

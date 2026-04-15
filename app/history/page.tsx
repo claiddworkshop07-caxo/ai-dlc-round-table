@@ -40,15 +40,15 @@ export default async function HistoryPage() {
             href="/"
             className={buttonVariants({ variant: "outline", size: "sm" })}
           >
-            ← ダッシュボード
+            ← Dashboard
           </Link>
-          <h1 className="text-xl font-semibold">貸出履歴</h1>
+          <h1 className="text-xl font-semibold">Lending History</h1>
         </div>
 
         {rows.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center text-muted-foreground">
-              貸出履歴がありません
+              No lending history found
             </CardContent>
           </Card>
         ) : (
@@ -79,30 +79,30 @@ export default async function HistoryPage() {
                                 : "bg-green-100 text-green-800"
                           }`}
                         >
-                          {isOverdue ? "期限超過" : isActive ? "貸出中" : "返却済み"}
+                          {isOverdue ? "Overdue" : isActive ? "On Loan" : "Returned"}
                         </span>
                       </div>
                       <div className="mt-1 grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                        <span>借用者: {r.borrowerName}</span>
+                        <span>Borrower: {r.borrowerName}</span>
                         <span>
-                          貸出日:{" "}
-                          {new Date(r.borrowedAt).toLocaleDateString("ja-JP")}
+                          Borrowed:{" "}
+                          {new Date(r.borrowedAt).toLocaleDateString("en-US")}
                         </span>
                         <span
                           className={isOverdue ? "font-medium text-destructive" : ""}
                         >
-                          返却予定: {r.dueDate}
+                          Due: {r.dueDate}
                         </span>
                         {r.returnedAt && (
                           <span>
-                            返却日:{" "}
-                            {new Date(r.returnedAt).toLocaleDateString("ja-JP")}
+                            Returned:{" "}
+                            {new Date(r.returnedAt).toLocaleDateString("en-US")}
                           </span>
                         )}
                       </div>
                       {r.memo && (
                         <p className="mt-1 text-sm text-muted-foreground">
-                          メモ: {r.memo}
+                          Notes: {r.memo}
                         </p>
                       )}
                     </CardHeader>

@@ -11,9 +11,9 @@ export default function ScanPage() {
             href="/"
             className={buttonVariants({ variant: "outline", size: "sm" })}
           >
-            ← 戻る
+            ← Back
           </Link>
-          <h1 className="text-xl font-semibold">QRコードをスキャン</h1>
+          <h1 className="text-xl font-semibold">Scan QR Code</h1>
         </div>
         <QRScanner />
       </div>

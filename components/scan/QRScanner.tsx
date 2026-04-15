@@ -46,7 +46,7 @@ export function QRScanner() {
         router.push(`/scan/${id}`);
       } else {
         setStatus("error");
-        setErrorMsg(`QRコードを読み取りましたが、備品IDが見つかりませんでした。\n内容: ${rawValue}`);
+        setErrorMsg(`QR code detected but no equipment ID was found.\nContent: ${rawValue}`);
       }
     },
     [router, stopCamera]
@@ -97,7 +97,7 @@ export function QRScanner() {
       } catch {
         if (isMounted) {
           setStatus("error");
-          setErrorMsg("カメラへのアクセスが拒否されました。ブラウザの設定でカメラを許可してください。");
+          setErrorMsg("Camera access was denied. Please allow camera access in your browser settings.");
         }
       }
     }
@@ -110,7 +110,7 @@ export function QRScanner() {
     script.onerror = () => {
       if (isMounted) {
         setStatus("error");
-        setErrorMsg("QRリーダーの読み込みに失敗しました。ネットワーク接続を確認してください。");
+        setErrorMsg("Failed to load the QR reader. Please check your network connection.");
       }
     };
     document.head.appendChild(script);
@@ -133,7 +133,7 @@ export function QRScanner() {
       stopCamera();
       router.push(`/scan/${id}`);
     } else {
-      alert("有効な備品IDを入力してください");
+      alert("Please enter a valid equipment ID");
     }
   }
 
@@ -142,7 +142,7 @@ export function QRScanner() {
       {/* 状態メッセージ */}
       {status === "detected" && (
         <div className="w-full max-w-sm rounded-lg border border-green-300 bg-green-50 p-3 text-center text-sm text-green-700">
-          ✅ QRコードを検出しました。移動中...
+          ✅ QR code detected. Redirecting...
         </div>
       )}
       {status === "error" && (
@@ -162,7 +162,7 @@ export function QRScanner() {
           )}
           {status === "loading" && (
             <div className="absolute inset-0 flex items-center justify-center">
-              <p className="text-sm text-white/60">読み込み中...</p>
+              <p className="text-sm text-white/60">Loading...</p>
             </div>
           )}
         </div>
@@ -174,24 +174,24 @@ export function QRScanner() {
         <div className="w-full max-w-sm space-y-3">
           {status === "scanning" && (
             <p className="text-center text-sm text-muted-foreground">
-              📷 QRコードを白枠内に合わせてください
+              📷 Align the QR code within the white frame
             </p>
           )}
           <div className="border-t pt-4">
             <p className="mb-2 text-sm font-medium text-muted-foreground">
-              または備品IDを直接入力
+              Or enter equipment ID directly
             </p>
             <form onSubmit={handleManualInput} className="flex gap-2">
               <input
                 name="equipmentId"
-                placeholder="備品IDまたはスキャンURL"
+                placeholder="Equipment ID or scan URL"
                 className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
               <button
                 type="submit"
                 className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
               >
-                移動
+                Go
               </button>
             </form>
           </div>
